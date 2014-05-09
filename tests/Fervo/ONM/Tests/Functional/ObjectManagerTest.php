@@ -7,6 +7,7 @@ use Fervo\ONM\Mapping\ClassMetadataFactory;
 use Fervo\ONM\Mapping\Driver\AnnotationDriver;
 use Fervo\ONM\ObjectManager;
 use Doctrine\Common\EventManager;
+use Neo4j\Neo4jPDO;
 
 use Models\TVModel\TVShow;
 use Fervo\ONM\Mapping\ClassMetadataInfo;
@@ -17,11 +18,17 @@ class ObjectManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testFoo()
     {
-        $em = new EventManager();
-        $om = new ObjectManager(null, $this->getConfigurationMock(), $em);
-
+        $om = $this->getObjectManager();
         $md = $om->getClassMetadata(TVShow::class);
         $this->assertInstanceOf(ClassMetadataInfo::class, $md);
+    }
+
+    public function testLoadNodeById()
+    {
+        $om = $this->getObjectManager();
+        $show = $om->find(TVShow::class, 13);
+
+        var_dump($show);
     }
 
     protected function setup()
@@ -45,5 +52,14 @@ class ObjectManagerTest extends \PHPUnit_Framework_TestCase
         $config->getAutoGenerateProxyClasses()->willReturn(true);
 
         return $config->reveal();
+    }
+
+    protected function getObjectManager()
+    {
+        $em = new EventManager();
+        $conn = new Neo4jPDO("http://localhost:7474");
+        $om = new ObjectManager($conn, $this->getConfigurationMock(), $em);
+
+        return $om;
     }
 }

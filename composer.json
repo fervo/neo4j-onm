@@ -7,7 +7,9 @@
     },
     "require": {
         "php": "~5.4",
-        "doctrine/common": "~2.4"
+        "doctrine/common": "~2.4",
+        "ocramius/generated-hydrator": "~1.0",
+        "neo4j/pdo": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",

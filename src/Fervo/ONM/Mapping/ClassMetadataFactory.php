@@ -53,6 +53,8 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
      */
     private $evm;
 
+    private $labelMap;
+
     /**
      * @param ObjectManager $om
      */
@@ -171,5 +173,29 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
     protected function isEntity(ClassMetadataInterface $class)
     {
         return true;
+    }
+
+    public function getMetadataForClassWithLabel($label)
+    {
+        $this->prepareLabelMap();
+
+        if (isset($this->labelMap[$label])) {
+            return $this->labelMap[$label];
+        }
+
+        return null;
+    }
+
+    protected function prepareLabelMap()
+    {
+        if ($this->labelMap !== null) {
+            return;
+        }
+
+        $this->labelMap = [];
+
+        foreach ($this->getAllMetadata() as $metadata) {
+            $this->labelMap[$metadata->classDefinition['label']] = $metadata;
+        }
     }
 }
