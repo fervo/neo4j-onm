@@ -8,6 +8,7 @@ use RuntimeException;
 use ReflectionClass;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\ClassLoader;
+use Doctrine\SkeletonMapper\Mapping\ClassMetadataInterface;
 
 /**
  * A <tt>ClassMetadata</tt> instance holds all the object-relational mapping metadata
@@ -27,7 +28,7 @@ use Doctrine\Common\ClassLoader;
  * @author Jonathan H. Wage <jonwage@gmail.com>
  * @since 2.0
  */
-class ClassMetadataInfo implements ClassMetadata
+class ClassMetadataInfo implements ClassMetadataInterface
 {
     const CLASS_TYPE_NODE = 1;
     const CLASS_TYPE_RELATIONSHIP = 2;

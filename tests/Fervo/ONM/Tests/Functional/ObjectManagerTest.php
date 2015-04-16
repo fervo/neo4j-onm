@@ -12,7 +12,7 @@ use Neo4j\Neo4jPDO;
 use Models\TVModel\TVShow;
 use Fervo\ONM\Mapping\ClassMetadataInfo;
 
-class ObjectManagerTest extends \PHPUnit_Framework_TestCase
+class ObjectManagerTest
 {
     private $prophet;
 
@@ -26,9 +26,9 @@ class ObjectManagerTest extends \PHPUnit_Framework_TestCase
     public function testLoadNodeById()
     {
         $om = $this->getObjectManager();
-        $show = $om->find(TVShow::class, 13);
+//        $show = $om->find(TVShow::class, 13);
 
-        var_dump($show);
+//        var_dump($show);
     }
 
     protected function setup()

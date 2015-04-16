@@ -24,6 +24,8 @@ use Doctrine\Common\Persistence\Mapping\ReflectionService;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata as ClassMetadataInterface;
 use Doctrine\Common\Persistence\Mapping\AbstractClassMetadataFactory;
 use Fervo\ONM\ObjectManager;
+use Doctrine\Common\EventManager;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 
 /**
  * The ClassMetadataFactory is used to create ClassMetadata objects that contain all the
@@ -39,11 +41,6 @@ use Fervo\ONM\ObjectManager;
 class ClassMetadataFactory extends AbstractClassMetadataFactory
 {
     /**
-     * @var ObjectManager
-     */
-    private $om;
-
-    /**
      * @var \Doctrine\Common\Persistence\Mapping\Driver\MappingDriver
      */
     private $driver;
@@ -55,12 +52,10 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
 
     private $labelMap;
 
-    /**
-     * @param ObjectManager $om
-     */
-    public function setObjectManager(ObjectManager $om)
+    public function __construct(EventManager $evm, MappingDriver $driver)
     {
-        $this->om = $om;
+        $this->evm = $evm;
+        $this->driver = $driver;
     }
 
     /**
@@ -68,8 +63,6 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
      */
     protected function initialize()
     {
-        $this->driver = $this->om->getConfiguration()->getMetadataDriverImpl();
-        $this->evm = $this->om->getEventManager();
         $this->initialized = true;
     }
 
