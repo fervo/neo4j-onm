@@ -1,0 +1,4 @@
+neo4j:
+    image: frodenas/neo4j
+    ports:
+        - "7474:7474"
