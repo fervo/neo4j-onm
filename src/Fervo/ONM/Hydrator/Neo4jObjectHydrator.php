@@ -4,6 +4,8 @@ namespace Fervo\ONM\Hydrator;
 
 use Doctrine\SkeletonMapper\Hydrator\ObjectHydrator;
 use Doctrine\SkeletonMapper\ObjectManager;
+use ProxyManager\Factory\LazyLoadingValueHolderFactory;
+use ProxyManager\Proxy\LazyLoadingInterface;
 
 /**
 *
@@ -11,10 +13,12 @@ use Doctrine\SkeletonMapper\ObjectManager;
 class Neo4jObjectHydrator extends ObjectHydrator
 {
     protected $om;
+    protected $proxyFactory;
 
     public function __construct(ObjectManager $om)
     {
         $this->om = $om;
+        $this->proxyFactory = new LazyLoadingValueHolderFactory();
     }
 
     /**
@@ -31,6 +35,28 @@ class Neo4jObjectHydrator extends ObjectHydrator
                 $cmd->setFieldValue($object, $field, $data[$field]);
             }
         }
+
+        foreach ($cmd->getAssociationNames() as $association) {
+            if ($cmd->isSingleValuedAssociation($association)) {
+                $targetClass = $cmd->getAssociationTargetClass($association);
+                $instance = $this->proxyFactory->createProxy($targetClass, function (&$wrappedObject, LazyLoadingInterface $proxy, $method, array $parameters, &$initializer) use ($object, $targetClass) {
+                    $initializer   = null; // disable initialization
+                    $wrappedObject = $this->om->getRepository($targetClass)->findOneRelated($object, )
+
+                    return true; // confirm that initialization occurred correctly
+                });
+
+
+
+
+            }
+        }
+
+
+
+
+
+
 
         return $object;
     }
