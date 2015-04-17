@@ -5,15 +5,15 @@ namespace Models;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\SkeletonMapper\Hydrator\HydratableInterface;
-use Doctrine\SkeletonMapper\Mapping\LoadMetadataInterface;
 use Doctrine\SkeletonMapper\Persister\IdentifiableInterface;
 use Doctrine\SkeletonMapper\Persister\PersistableInterface;
-abstract class BaseObject implements HydratableInterface, PersistableInterface, IdentifiableInterface, LoadMetadataInterface, NotifyPropertyChanged
+abstract class BaseObject implements PersistableInterface, NotifyPropertyChanged
 {
     /**
      * @var array
      */
     private $listeners = array();
+
     /**
      * @param \Doctrine\Common\PropertyChangedListener $listener
      */
@@ -21,6 +21,7 @@ abstract class BaseObject implements HydratableInterface, PersistableInterface, 
     {
         $this->listeners[] = $listener;
     }
+
     /**
      * @param string $propName
      * @param mixed  $oldValue

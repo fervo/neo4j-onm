@@ -14,9 +14,9 @@ use Doctrine\SkeletonMapper\UnitOfWork\ChangeSet;
 use Fervo\ONM\Mapping\Annotations as ONM;
 
 /**
-* @ONM\Node(label="User")
+* @ONM\Node(label="Group")
 */
-class User extends BaseObject
+class Group extends BaseObject
 {
     /**
      * @ONM\Id
@@ -26,23 +26,7 @@ class User extends BaseObject
     /**
      * @ONM\Property(type="string")
      */
-    private $username;
-
-    /**
-     * @var string
-     * @ONM\Property(type="string")
-     */
-    private $password;
-
-    /**
-     * @var array
-     */
-    private $groups;
-
-    public function __construct()
-    {
-        $this->groups = new ArrayCollection();
-    }
+    private $name;
 
     public function getId()
     {
@@ -58,43 +42,18 @@ class User extends BaseObject
         }
     }
 
-    public function getUsername()
+    public function getName()
     {
-        return $this->username;
+        return $this->name;
     }
 
-    public function setUsername($username)
+    public function setName($name)
     {
-        $username = (string) $username;
-        if ($this->username !== $username) {
-            $this->onPropertyChanged('username', $this->username, $username);
-            $this->username = $username;
+        $name = (string) $name;
+        if ($this->name !== $name) {
+            $this->onPropertyChanged('name', $this->name, $name);
+            $this->name = $name;
         }
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    public function setPassword($password)
-    {
-        $password = (string) $password;
-        if ($this->password !== $password) {
-            $this->onPropertyChanged('password', $this->password, $password);
-            $this->password = $password;
-        }
-    }
-
-    public function addGroup(Group $group)
-    {
-        $this->groups->add($group);
-        $this->onPropertyChanged('groups', $this->groups, $this->groups);
-    }
-
-    public function getGroups()
-    {
-        return $this->groups;
     }
 
     /**
@@ -105,8 +64,7 @@ class User extends BaseObject
     public function preparePersistChangeSet()
     {
         $changeSet = array(
-            'username' => $this->username,
-            'password' => $this->password,
+            'name' => $this->name,
         );
         if ($this->id !== null) {
             $changeSet['id'] = (int) $this->id;

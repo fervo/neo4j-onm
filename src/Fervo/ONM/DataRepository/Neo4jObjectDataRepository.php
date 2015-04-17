@@ -67,8 +67,23 @@ class Neo4jObjectDataRepository extends BasicObjectDataRepository
 
     public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
     {
-        throw new \Exception("uh-oh");
-        return [];
+        $label = $this->getLabel();
+
+        $params = [];
+        foreach ($criteria as $key => $value) {
+            $params[] = $key.': {criteria}.'.$key;
+        }
+
+        $q = $this->getConnection()->prepare('MATCH (n:'.$label.' {'.implode(', ', $params).'}) RETURN n');
+        $q->bindParam('criteria', $criteria);
+        $q->execute();
+
+        $out = [];
+        foreach ($q->fetchAll() as $row) {
+            $out[] = $row['n'];
+        }
+
+        return $out;
     }
 
     public function findOneBy(array $criteria)

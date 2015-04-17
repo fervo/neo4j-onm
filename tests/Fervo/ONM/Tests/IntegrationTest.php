@@ -5,7 +5,7 @@ namespace Fervo\ONM\Tests;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventManager;
 use Doctrine\SkeletonMapper\DataRepository\ArrayObjectDataRepository;
-use Doctrine\SkeletonMapper\Hydrator\BasicObjectHydrator;
+use Fervo\ONM\Hydrator\Neo4jObjectHydrator;
 use Doctrine\SkeletonMapper\Mapping\ClassMetadata;
 use Fervo\ONM\Mapping\ClassMetadataFactory;
 use Doctrine\SkeletonMapper\ObjectFactory;
@@ -57,14 +57,14 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $conn = new Neo4jPDO("http://192.168.42.43:7474");
 
         $userDataRepository = new Neo4jObjectDataRepository(
-            $objectManager, $conn, Users::class, 'User'
+            $objectManager, $conn, User::class, 'User'
         );
 
         $userPersister = new Neo4jObjectPersister(
-            $objectManager, $conn, Users::class, 'User'
+            $objectManager, $conn, User::class, 'User'
         );
 
-        $userHydrator = new BasicObjectHydrator($objectManager);
+        $userHydrator = new Neo4jObjectHydrator($objectManager);
         $userRepository = new BasicObjectRepository(
             $objectManager,
             $userDataRepository,
@@ -83,7 +83,9 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     public function testSomething()
     {
-        $this->conn->exec('MATCH (n:User) DELETE n');
+        $this->conn->exec('MATCH (n)
+OPTIONAL MATCH (n)-[r]-()
+DELETE n,r');
 
         // create and persist a new user
         $user = new User();
@@ -120,5 +122,16 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $truth = $this->conn->query('MATCH (n:User) WHERE n.id = 1 RETURN n')->fetchAll();
 
         $this->assertArrayNotHasKey(0, $truth);
+    }
+
+    public function testSomethingElse()
+    {
+        $this->conn->exec('MATCH (n)
+OPTIONAL MATCH (n)-[r]-()
+DELETE n,r');
+        $this->conn->exec('CREATE p =(mrt:User { id: 1, username:"MrT", password:"fool" })-[:MEMBER_OF_GROUP]->(fools:Group {name:"Fools", id: 1})<-[:MEMBER_OF_GROUP]-(ba:User { id: 2, username:"BABaracus", password:"pity" })');
+
+        $mrT = $this->objectManager->find(User::class, 1);
+        var_dump($mrT);
     }
 }

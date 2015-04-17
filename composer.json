@@ -14,8 +14,9 @@
     "require": {
         "php": "~5.6",
         "doctrine/common": "~2.4",
-        "doctrine/skeleton-mapper": "dev-master",
+        "doctrine/skeleton-mapper": "dev-interfaces",
         "ocramius/proxy-manager": "1.0.*",
+        "ocramius/generated-hydrator": "~1.0",
         "neo4j/pdo": "dev-master"
     },
     "require-dev": {
@@ -25,5 +26,11 @@
     },
     "config": {
         "bin-dir": "bin"
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:fervo/skeleton-mapper.git"
+        }
+    ]
 }

@@ -114,6 +114,25 @@ class Neo4jObjectPersister extends BasicObjectPersister
     }
 
     /**
+     * Assign identifier to object.
+     *
+     * @param object $object
+     * @param array  $identifier
+     */
+    public function assignIdentifier($object, array $identifier)
+    {
+        $cmd = $this->objectManager
+            ->getClassMetadata(get_class($object));
+
+        $refl = $cmd
+            ->getSingleIdReflectionProperty();
+
+        $idField = $cmd->getIdentifierFieldNames()[0];
+
+        $refl->setValue($object, $identifier[$idField]);
+    }
+
+    /**
      * @param object $object
      *
      * @return array $identifier
